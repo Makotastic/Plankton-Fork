@@ -60,8 +60,8 @@ rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr g_pose_publisher;
 rclcpp::Publisher<geometry_msgs::msg::Vector3Stamped>::SharedPtr g_euler_publisher;
 
 #ifndef TF2_MATRIX3x3_H
-  typedef btScalar tfScalar;
-  namespace tf { typedef btMatrix3x3 Matrix3x3; }
+  typedef double tfScalar;
+  namespace tf { typedef tf2::Matrix3x3 Matrix3x3; }
 #endif
 
 void addTransform(std::vector<geometry_msgs::msg::TransformStamped>& transforms, const tf2::Stamped<tf2::Transform>& tf, std::string child_frame_id)
