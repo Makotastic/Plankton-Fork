@@ -1,0 +1,14 @@
+/**:
+  ros__parameters:
+    thruster_manager:
+      base_link: base_link
+      conversion_fcn: proportional
+      conversion_fcn_params:
+        gain: 0.00031
+      max_thrust: 1540.0
+      tf_prefix: rexrov
+      thruster_frame_base: thruster_
+      thruster_topic_prefix: thrusters/
+      thruster_topic_suffix: /input
+      timeout: -1
+      update_rate: 10
