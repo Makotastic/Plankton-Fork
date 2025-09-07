@@ -1,0 +1,20 @@
+# keep this tight
+.git
+**/__pycache__/
+**/.pytest_cache/
+build
+install
+log
+.uuv_ws
+.uuv_ws/*
+workspace/build
+workspace/install
+workspace/log
+*.bag
+*.csv
+*.parquet
+*.pth
+*.onnx
+node_modules
+dist
+*.log

@@ -1,0 +1,111 @@
+{
+  "name": "ROS 2 UUV Swarm Pipeline Inspection",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "COLCON_JOBS": "1"
+    }
+  },
+  "runArgs": [
+    "--gpus=all",
+    "--network=host",
+    "--ipc=host",
+    "--device=/dev/dxg",
+    "--volume=/usr/lib/wsl:/usr/lib/wsl:ro",
+    "--volume=/mnt/wslg/.X11-unix:/tmp/.X11-unix",
+    "--volume=/mnt/wslg/runtime-dir:/tmp/runtime-dir",
+    "--memory=20g",
+    "--memory-swap=24g",
+    "--shm-size=4g"
+  ],
+  "containerEnv": {
+    "ROS_DOMAIN_ID": "42",
+    "GAZEBO_MODEL_PATH": "/uuv_ws/src/Plankton/uuv_descriptions/models",
+    "PYTHONPATH": "/workspace/src",
+    "DISPLAY": ":0",
+    "WAYLAND_DISPLAY": "wayland-0",
+    "XDG_RUNTIME_DIR": "/tmp/runtime-dir",
+    "PULSE_SERVER": "unix:/tmp/runtime-dir/pulse/native",
+    "LD_LIBRARY_PATH": "/usr/lib/wsl/lib",
+    "LIBGL_DRIVERS_PATH": "/usr/lib/x86_64-linux-gnu/dri",
+    "__GLX_VENDOR_LIBRARY_NAME": "mesa",
+    "LIBGL_ALWAYS_INDIRECT": "0",
+    "COLCON_SHELL": "bash",
+    "MESA_D3D12_DEFAULT_ADAPTER_NAME": "NVIDIA",
+    "MESA_GL_VERSION_OVERRIDE": "3.3COMPAT",
+    "MESA_GLSL_VERSION_OVERRIDE": "330"
+  },
+  "mounts": [
+    "source=uuv-gazebo-models,target=/root/.gazebo/models,type=volume",
+    "source=uuv-ros-logs,target=/root/.ros/log,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-iot.vscode-ros",
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "twxs.cmake",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.vscode-jupyter-cell-tags",
+        "ms-toolsai.vscode-jupyter-slideshow"
+      ],
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": [
+              "-l"
+            ]
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.analysis.extraPaths": [
+          "/workspace/src",
+          "/opt/ros/humble/lib/python3.10/site-packages"
+        ],
+        "cmake.configureOnOpen": false,
+        "files.associations": {
+          "*.launch": "xml",
+          "*.xacro": "xml",
+          "*.urdf": "xml"
+        },
+        "editor.formatOnSave": true,
+        "python.formatting.provider": "black"
+      }
+    }
+  },
+  "postCreateCommand": [
+    "bash",
+    "-c",
+    "echo 'Setting up workspace...' && cd /workspace && source /opt/ros/humble/setup.bash && source /uuv_ws/install/setup.bash && echo 'Workspace ready! Run: ros2 launch uuv_gazebo start_pid_demo_with_teleop.launch' && echo 'For UUV demo, or start developing your swarm pipeline inspection system.'"
+  ],
+  "postStartCommand": "echo 'Container started successfully!'",
+  "remoteUser": "root",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "forwardPorts": [
+    11345,
+    11346,
+    11347,
+    8888
+  ],
+  "portsAttributes": {
+    "8888": {
+      "label": "Jupyter Lab",
+      "onAutoForward": "notify"
+    },
+    "11345": {
+      "label": "Gazebo Master",
+      "onAutoForward": "silent"
+    }
+  }
+}
