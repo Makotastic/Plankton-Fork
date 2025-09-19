@@ -51,19 +51,10 @@ def generate_launch_description():
     robot_state_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
-                get_package_share_directory("uuv_descriptions"),
-                "/launch/upload_rexrov_default.launch.py",
+                get_package_share_directory("rexrov_control"),
+                "/launch/start_rexrov_with_control.launch.py",
             ]
         ),
-        launch_arguments={
-            "namespace": "rexrov",
-            "x": "0",
-            "y": "0",
-            "z": "-20",
-            "roll": "0",
-            "pitch": "0",
-            "yaw": "0",
-        }.items(),
     )
 
     # Wait a bit for Gazebo and robot_state_publisher to start up before spawning
@@ -86,6 +77,14 @@ def generate_launch_description():
         output="screen",
     )
 
+    # Start the plankton global sim time node to provide simulation time service
+    plankton_sim_time_node = Node(
+        package="plankton_utils",
+        executable="plankton_global_sim_time",
+        name="plankton_global_sim_time",
+        output="screen",
+    )
+
     return LaunchDescription(
         [
             SetEnvironmentVariable(
@@ -93,6 +92,7 @@ def generate_launch_description():
             ),
             SetEnvironmentVariable("GAZEBO_MODEL_PATH", env_vars["GAZEBO_MODEL_PATH"]),
             gazebo_process,
+            plankton_sim_time_node,
             robot_state_publisher,
             spawn_entity,
         ]
