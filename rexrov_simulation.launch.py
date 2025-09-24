@@ -39,7 +39,7 @@ def generate_launch_description():
         f"export GAZEBO_RESOURCE_PATH={env_vars['GAZEBO_RESOURCE_PATH']} && "
         "gazebo --verbose "
         + get_package_share_directory("uuv_gazebo_worlds")
-        + "/worlds/empty_underwater.world",
+        + "/worlds/empty_underwater.world -s libgazebo_ros_factory.so",
     ]
 
     gazebo_process = ExecuteProcess(
@@ -48,7 +48,7 @@ def generate_launch_description():
     )
 
     # Include the robot state publisher from uuv_descriptions
-    robot_state_publisher = IncludeLaunchDescription(
+    launch_robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 get_package_share_directory("rexrov_control"),
@@ -57,25 +57,20 @@ def generate_launch_description():
         ),
     )
 
-    # Wait a bit for Gazebo and robot_state_publisher to start up before spawning
-    import time
-
-    time.sleep(2)
-
     # Use gz model command to spawn the model (bypasses ROS spawn service issues)
     # This approach uses the parameter server instead of the topic
-    spawn_entity_cmd = [
-        "bash",
-        "-c",
-        "sleep 15 && ros2 param get /rexrov/robot_state_publisher robot_description | "
-        + "sed 's/^String value is: //' > /tmp/rexrov_final.urdf && "
-        + "gz model -m rexrov -f /tmp/rexrov_final.urdf",
-    ]
+    # spawn_entity_cmd = [
+    #     "bash",
+    #     "-c",
+    #     "sleep 15 && ros2 param get /rexrov/robot_state_publisher robot_description | "
+    #     + "sed 's/^String value is: //' > /tmp/rexrov_final.urdf && "
+    #     + "gz model -m rexrov -f /tmp/rexrov_final.urdf",
+    # ]
 
-    spawn_entity = ExecuteProcess(
-        cmd=spawn_entity_cmd,
-        output="screen",
-    )
+    # spawn_entity = ExecuteProcess(
+    #     cmd=spawn_entity_cmd,
+    #     output="screen",
+    # )
 
     # Start the plankton global sim time node to provide simulation time service
     plankton_sim_time_node = Node(
@@ -91,9 +86,9 @@ def generate_launch_description():
                 "GAZEBO_PLUGIN_PATH", env_vars["GAZEBO_PLUGIN_PATH"]
             ),
             SetEnvironmentVariable("GAZEBO_MODEL_PATH", env_vars["GAZEBO_MODEL_PATH"]),
-            gazebo_process,
             plankton_sim_time_node,
-            robot_state_publisher,
-            spawn_entity,
+            gazebo_process,
+            launch_robot,
+            # spawn_entity,
         ]
     )

@@ -33,13 +33,11 @@ def generate_launch_description():
             "roll": "0",
             "pitch": "0",
             "yaw": "0",
+            "mode": "sonar",
+            "write_file_on_disk": "true",
         }.items(),
     )
 
-    # 2. Launch the position controller and thruster manager
-    # position_hold_launch.xml already includes the thruster manager,
-    # so we only need to include this one file.
-    # We use AnyLaunchDescriptionSource because it's an XML file.
     position_control_launch = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
             os.path.join(rexrov_control_launch_dir, "position_hold_launch.xml")
