@@ -16,14 +16,14 @@ def generate_launch_description():
 
     # Get the launch directory for the uuv_descriptions package
     uuv_descriptions_launch_dir = os.path.join(
-        get_package_share_directory("uuv_descriptions"), "launch"
+        get_package_share_directory("rexrov_control"), "launch"
     )
 
     # 1. Launch the simulation and spawn the RexROV
     # We use the existing launch file from uuv_descriptions
     spawn_rexrov_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(uuv_descriptions_launch_dir, "upload_rexrov_default.launch.py")
+            os.path.join(rexrov_control_launch_dir, "upload_rexrov_V2.launch.py")
         ),
         launch_arguments={
             "namespace": "rexrov",
@@ -33,7 +33,7 @@ def generate_launch_description():
             "roll": "0",
             "pitch": "0",
             "yaw": "0",
-            "mode": "sonar",
+            # "mode": "sonar",
             "write_file_on_disk": "true",
         }.items(),
     )
