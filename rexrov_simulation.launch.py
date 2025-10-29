@@ -39,7 +39,7 @@ def generate_launch_description():
         f"export GAZEBO_RESOURCE_PATH={env_vars['GAZEBO_RESOURCE_PATH']} && "
         "gazebo --verbose "
         + get_package_share_directory("uuv_gazebo_worlds")
-        + "/worlds/empty_underwater.world -s libgazebo_ros_factory.so",
+        + "/worlds/herkules_ship_wreck.world -s libgazebo_ros_factory.so",
     ]
 
     gazebo_process = ExecuteProcess(

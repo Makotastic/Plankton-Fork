@@ -173,11 +173,66 @@ def launch_setup(context, *args, **kwargs):
         AnyLaunchDescriptionSource(message_to_tf_launch), launch_arguments=launch_args
     )
 
+    # Static TF publishers for sensors to ensure links appear in TF tree
+    sonar_tf_pub = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="sonar_tf_pub",
+        arguments=[
+            "1.4",
+            "0",
+            "0.65",
+            "0",
+            "0",
+            "0",
+            "1",
+            "rexrov/base_link",
+            "rexrov/sonar_link",
+        ],
+    )
+
+    mbes_tf_pub = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="mbes_tf_pub",
+        arguments=[
+            "1.4",
+            "0",
+            "0.4",
+            "0.5646424733950355",
+            "0",
+            "0",
+            "0.8253366149096783",
+            "rexrov/base_link",
+            "rexrov/sonar_mbes_link",
+        ],  # quaternion for y-axis rotation adjusted
+    )
+
+    dvl_tf_pub = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="dvl_tf_pub",
+        arguments=[
+            "-1.4",
+            "0",
+            "-0.312",
+            "0",
+            "0.7071067811865476",
+            "0",
+            "0.7071067811865476",
+            "rexrov/base_link",
+            "rexrov/dvl_link",
+        ],  # rpy 0 pi/2 0
+    )
+
     group = GroupAction(
         [
             PushRosNamespace(namespace),
             urdf_spawner,
             robot_state_publisher,
+            sonar_tf_pub,
+            mbes_tf_pub,
+            dvl_tf_pub,
         ]
     )
 

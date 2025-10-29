@@ -6,7 +6,7 @@
       namespace="${namespace}"
       suffix="_mbes"
       parent_link="${parent_link}"
-      topic="mbes_swath"
+      topic="mbes"
       mass="0.02"
       update_rate="8"
       samples="512"
